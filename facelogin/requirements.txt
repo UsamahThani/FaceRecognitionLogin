@@ -1,0 +1,5 @@
+Flask
+Flask-MySQLdb
+opencv-python
+face-recognition
+numpy

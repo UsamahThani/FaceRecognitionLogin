@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login || Code Camp BD</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
+    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+
+    <link rel="stylesheet" href="{{url_for("static", filename="css/login.css")}}">
+
+    <style>
+        #buttn {
+            color: #fff;
+            background-color: #5c4ac7;
+        }
+        #video {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/animsition.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/animate.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+</head>
+
+<body>
+    <header id="header" class="header-scroll top-header headrom">
+        <nav class="navbar navbar-dark">
+            <div class="container">
+                <button class="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#mainNavbarCollapse">&#9776;</button>
+                <a class="navbar-brand" href="http://localhost/FoodOrder/index.php"> <img class="img-rounded" src="{{url_for("static", filename="images/logo0.png")}}" alt="" width="18%"> </a>
+                <div class="collapse navbar-toggleable-md  float-lg-right" id="mainNavbarCollapse">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item"> <a class="nav-link active" href="http://localhost/FoodOrder/index.php">Home <span class="sr-only">(current)</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link active" href="http://localhost/FoodOrder/restaurants.php">Restaurants <span class="sr-only"></span></a> </li>
+                        <li class="nav-item"> <a class="nav-link active" href="http://127.0.0.1:5000/login">Login <span class="sr-only"></span></a> </li>
+                        <li class="nav-item"> <a class="nav-link active" href="http://localhost/FoodOrder/registration.php">Register <span class="sr-only"></span></a> </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div style=" background-image: url('static/images/img/pimg.jpg');">
+
+        
+        <div class="pen-title">
+            </div>
+
+                <div class="module form-module">
+                    <div class="toggle">
+
+                    </div>
+                    {% if error_message %}
+                        <script>
+                            alert("{{ error_message }}");
+                        </script>
+                    {% endif %}
+                    <div class="form" id="loginForm" action="/login" method="post">
+                        <h2>Login to your account</h2>
+                        <form action="" method="post">
+                            <video id="video" autoplay></video>
+                            <input type="hidden" name="image" id="image" value="">
+                            <input type="submit" id="buttn" onclick="captureAndSubmit()" name="submit" value="Login" />
+                        </form>
+                    </div>
+
+                    <div class="cta">
+                        Not registered?<a href="http://localhost/FoodOrder/registration.php" style="color:#5c4ac7;"> Create an account</a><br>
+                        Login using <a href="http://localhost/FoodOrder/login.php" style="color:#5c4ac7;">Username and Password</a>
+                    </div>
+                </div>
+                <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+
+                <div class="container-fluid pt-3">
+                    <p></p>
+                </div>
+
+
+
+                {% include "footer.html" %}
+
+                <script>
+                    const video = document.getElementById('video');
+                    const loginForm = document.getElementById('loginForm');
+                    const imageInput = document.getElementById('image');
+                    const constraints = {
+                        video: true
+                    };
+
+                    // Access the user's camera
+                    navigator.mediaDevices.getUserMedia(constraints)
+                        .then(function(stream) {
+                            video.srcObject = stream;
+                        })
+                        .catch(function(error) {
+                            console.error('Error accessing camera:', error);
+                        });
+
+                    function captureAndSubmit() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        const context = canvas.getContext('2d');
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const dataURL = canvas.toDataURL('image/png');
+                        imageInput.value = dataURL;
+                        loginForm.submit();
+                    }
+                </script>
+            
+
+</body>
+
+</html>
