@@ -16,20 +16,19 @@ face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 def convert_image(image):
     # Convert the image to grayscale for face detection using Haar Cascade
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
+
     # Detect faces using Haar Cascade
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
-    
+
     if len(faces) == 0:
         raise ValueError("No faces found in the image.")
-    
+
     # Assuming only one face is detected for simplicity
     (x, y, w, h) = faces[0]
-    face_roi = gray[y:y+h, x:x+w]
-    
+
     # Compute face encodings using face_recognition library
     face_encoding = face_recognition.face_encodings(image, [(y, x+w, y+h, x)])[0]
-    
+
     return face_encoding
 
 @app.route('/')
@@ -44,21 +43,21 @@ def register():
         image_data = image_file.read()
         nparr = np.frombuffer(image_data, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
+
         try:
             face_encoding = convert_image(img)  # Assuming this function converts the image to face encoding
         except ValueError as e:
             return jsonify({'error': str(e)}), 400
 
         cursor = mysql.connection.cursor()
-        
+
         # Check if the username already exists in the database
         cursor.execute('''SELECT * FROM users WHERE username = %s''', (username,))
         user = cursor.fetchone()
 
         if user:
             # Update the existing record for the specified username
-            cursor.execute('''UPDATE users SET face_encoding = %s WHERE username = %s''', (face_encoding.tostring(), username))
+            cursor.execute('''UPDATE users SET face_encoding = %s WHERE username = %s''', (face_encoding.tobytes(), username))
             mysql.connection.commit()
             cursor.close()
             return jsonify({'success': 'Face encoding updated successfully.'}), 200
@@ -83,7 +82,7 @@ def login():
             return render_template('login.html', error_message=error_message)
 
         cursor = mysql.connection.cursor()
-        cursor.execute(''' SELECT username, face_encoding FROM users ''')
+        cursor.execute('''SELECT username, face_encoding FROM users''')
         users = cursor.fetchall()
         cursor.close()
 
